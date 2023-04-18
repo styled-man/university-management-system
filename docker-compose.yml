@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  next-app:
+    build:
+      context: next-app
+      target: development
+    ports:
+      - ${NEXT_APP_PORT:-3000}:${NEXT_APP_PORT:-3000}
+    volumes:
+      - ./next-app:/app
+    env_file:
+      - .env
