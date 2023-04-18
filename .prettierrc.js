@@ -3,7 +3,7 @@
  */
 module.exports = {
     tabWidth: 4,
-    printWidth: 200,
+    printWidth: 100,
     arrowParens: "avoid",
     semi: false,
     overrides: [
