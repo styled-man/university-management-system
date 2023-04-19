@@ -1,5 +1,6 @@
 import "./globals.tw.css"
 import { Poppins } from "next/font/google"
+import Navbar from "@/components/Navbar"
 
 export const metadata = {
     title: "University management system",
@@ -14,7 +15,12 @@ const poppins = Poppins({
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
-            <body className={`${poppins.className}`}>{children}</body>
+            <body className={`${poppins.className}`}>
+                <header>
+                    <Navbar />
+                </header>
+                {children}
+            </body>
         </html>
     )
 }
