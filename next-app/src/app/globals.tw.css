@@ -7,5 +7,6 @@ html {
 }
 
 body {
-    @apply font-poppins;
+    @apply font-poppins bg-[#edf2f7] bg-fixed overflow-x-hidden max-w-full;
+    background: radial-gradient(circle, white 0%, #c3c7cb 100%);
 }
