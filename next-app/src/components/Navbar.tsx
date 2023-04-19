@@ -12,22 +12,21 @@ type NavLinks = {
 
 export default function Navbar() {
     const navLinks = useMemo(
-        () =>
-            [
-                {
-                    name: "Home",
-                    link: "/",
-                },
-                {
-                    name: "Contact",
-                    link: "/contact",
-                },
-                {
-                    name: "Login",
-                    link: "/auth",
-                    style: "outline",
-                },
-            ] as NavLinks[],
+        (): NavLinks[] => [
+            {
+                name: "Home",
+                link: "/",
+            },
+            {
+                name: "Contact",
+                link: "/contact",
+            },
+            {
+                name: "Login",
+                link: "/login",
+                style: "outline",
+            },
+        ],
         []
     )
     return (
