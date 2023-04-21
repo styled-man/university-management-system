@@ -9,5 +9,6 @@ services:
       - ${NEXT_APP_PORT:-3000}:${NEXT_APP_PORT:-3000}
     volumes:
       - ./next-app:/app
+      - /app/node_modules
     env_file:
       - .env
