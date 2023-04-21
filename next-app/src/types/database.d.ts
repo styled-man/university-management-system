@@ -5,6 +5,8 @@ interface PersonalInfo {
     phoneNumber: string
     gender?: string
     dateOfBirth: string
+    password?: string
+    confirmPassword?: string
 }
 
 interface Address {
