@@ -3,7 +3,7 @@
 import Input from "@/components/Input"
 import Section from "@/components/Section"
 import SubmitButton from "@/components/SubmitButton"
-import { UserData, INITIAL_STATE, userDataReducer } from "@/utils/reducers/userData"
+import { INITIAL_STATE, UserData, userDataReducer } from "@/utils/reducers/userData"
 import { FormEvent, useEffect, useReducer } from "react"
 
 export default function Setup() {
