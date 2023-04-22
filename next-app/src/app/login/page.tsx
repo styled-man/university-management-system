@@ -3,14 +3,33 @@
 import Input from "@/components/Input"
 import SubmitButton from "@/components/SubmitButton"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { FormEvent, useState } from "react"
 
 export default function Login() {
+    const router = useRouter()
+
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [error, setError] = useState<string | null>(null)
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-        alert(`email: ${email}\npassword: ${password}`)
+        event.preventDefault()
+
+        const response = await fetch("/api/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+        })
+
+        if (!response.ok) {
+            setError(response.statusText)
+            return
+        }
+
+        router.push("/dashboard")
     }
 
     return (
@@ -18,25 +37,19 @@ export default function Login() {
             <div className="bg-white mt-[10vh] p-10 shadow rounded-md">
                 <h1 className="text-center font-bold text-2xl mb-5">Login</h1>
 
-                <form className="w-[40vh] max-w-xs" onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <Input
-                            label="Email"
-                            placeholder="someone@email.com"
-                            onChange={e => setEmail(e.target.value)}
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <Input
-                            label="Password"
-                            placeholder="*********"
-                            onChange={e => setPassword(e.target.value)}
-                            type="password"
-                        />
-                    </div>
+                <form className="flex items-center justify-center flex-col gap-8 w-[30vw]" onSubmit={handleSubmit}>
+                    <Input label="Email" placeholder="someone@email.com" onChange={e => setEmail(e.target.value)} />
+                    <Input
+                        label="Password"
+                        placeholder="*********"
+                        onChange={e => setPassword(e.target.value)}
+                        type="password"
+                    />
 
                     <SubmitButton>Login</SubmitButton>
                 </form>
+
+                <h3 className="text-red-600 text-center capitalize">{error}</h3>
 
                 <hr className="my-6" />
 
