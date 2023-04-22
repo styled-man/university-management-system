@@ -10,7 +10,7 @@ interface Input {
 
 export default function Input({ onChange, label, placeholder, value, type = "text" }: Input) {
     return (
-        <div>
+        <div className="w-full">
             <label htmlFor={label + placeholder} className="block mb-2 font-medium text-sm">
                 {label}
             </label>
