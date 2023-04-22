@@ -1,10 +1,28 @@
 version: "3.8"
 
 services:
+  database:
+    restart: always
+    image: postgres:15
+    ports:
+      - ${DATABASE_PORT:-5432}:${DATABASE_PORT:-5432}
+    environment:
+      - POSTGRES_USER=${DATABSE_USER:-smyvens}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD:-strong_password}
+      - POSTGRES_DB=${DATABASE_NAME:-university_management_system}
+    volumes:
+      - ./database/scripts/:/docker-entrypoint-initdb.d/:ro
+      - ./database/data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+
   next-app:
     build:
       context: next-app
       target: development
+    depends_on:
+      database:
+        condition: service_healthy
     ports:
       - ${NEXT_APP_PORT:-3000}:${NEXT_APP_PORT:-3000}
     volumes:
