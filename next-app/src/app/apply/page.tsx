@@ -33,6 +33,7 @@ export default function Apply() {
 
         if (!response.ok) {
             setError(response.statusText)
+            return
         }
 
         router.push("/profile")
