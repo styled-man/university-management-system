@@ -1,11 +1,11 @@
 import connection from "@/utils/database"
+import { createToken } from "@/utils/jwt"
 import { verify } from "argon2"
-import { NextResponse } from "next/server"
 import { DatabaseError, QueryResult } from "pg"
 
 export async function POST(request: Request) {
-    let userInfo: Partial<PersonalInfo>
-    let data: QueryResult<PersonalInfo & { id: number }>
+    let userInfo: Partial<UserWithId>
+    let data: QueryResult<UserWithId>
 
     // if body is not included in the request, or is malformed
     try {
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     try {
         data = (await connection?.query(`SELECT id, password FROM profile_info WHERE email = $1`, [
             userInfo.email,
-        ])) as QueryResult<PersonalInfo & { id: number }>
+        ])) as QueryResult<UserWithId>
     } catch (e) {
         const error = e as DatabaseError
         return new Response(null, { status: 500, statusText: error.message })
@@ -36,10 +36,17 @@ export async function POST(request: Request) {
         return new Response(null, { status: 403, statusText: "Invalid email or password!" })
     }
 
-    // if the passwords match
-    if (await verify(data.rows[0].password!, userInfo.password)) {
-        return NextResponse.json({ id: data.rows[0].id })
+    // if the passwords that was sent does not match the password in the database
+    if (!(await verify(data.rows[0].password!, userInfo.password))) {
+        return new Response(null, { status: 403, statusText: "Invalid email or password!" })
     }
 
-    return new Response(null, { status: 403, statusText: "Invalid email or password!" })
+    delete userInfo.password
+    userInfo.id = data.rows[0].id
+
+    return new Response(JSON.stringify({ ...userInfo }), {
+        headers: {
+            "Set-Cookie": `jwt_token=${createToken(userInfo)}; HttpOnly; Secure; Path=/`,
+        },
+    })
 }
