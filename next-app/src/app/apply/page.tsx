@@ -4,21 +4,35 @@ import Input from "@/components/Input"
 import SubmitButton from "@/components/SubmitButton"
 import { INITIAL_STATE, userDataReducer } from "@/utils/reducers/userData"
 import { useRouter } from "next/navigation"
-import { FormEvent, useReducer } from "react"
+import { FormEvent, useReducer, useState } from "react"
 
 export default function Apply() {
     const router = useRouter()
 
     const [userInput, dispatch] = useReducer(userDataReducer, INITIAL_STATE)
+    const [error, setError] = useState<string | null>(null)
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
+        setError(null)
 
         for (const [key, value] of Object.entries(userInput)) {
             if (!value) {
                 alert(`${key} cannot be empty`)
                 return
             }
+        }
+
+        const response = await fetch("/api/user", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(userInput.personalInfo),
+        })
+
+        if (!response.ok) {
+            setError(response.statusText)
         }
 
         router.push("/profile")
@@ -34,7 +48,7 @@ export default function Apply() {
                         <Input
                             label="First Name"
                             placeholder="John"
-                            value={userInput.personalInfo?.firstName}
+                            value={userInput.personalInfo?.firstName || ""}
                             onChange={e =>
                                 dispatch({ type: "MODIFY_PERSONAL_INFO", payload: { firstName: e.target.value } })
                             }
@@ -42,7 +56,7 @@ export default function Apply() {
                         <Input
                             label="Last Name"
                             placeholder="Doe"
-                            value={userInput.personalInfo?.lastName}
+                            value={userInput.personalInfo?.lastName || ""}
                             onChange={e =>
                                 dispatch({ type: "MODIFY_PERSONAL_INFO", payload: { lastName: e.target.value } })
                             }
@@ -50,7 +64,7 @@ export default function Apply() {
                         <Input
                             label="Email"
                             placeholder="someone@email.com"
-                            value={userInput.personalInfo?.email}
+                            value={userInput.personalInfo?.email || ""}
                             onChange={e =>
                                 dispatch({ type: "MODIFY_PERSONAL_INFO", payload: { email: e.target.value } })
                             }
@@ -58,7 +72,7 @@ export default function Apply() {
                         <Input
                             label="Phone number"
                             placeholder="(000) 123-4567"
-                            value={userInput.personalInfo?.phoneNumber}
+                            value={userInput.personalInfo?.phoneNumber || ""}
                             onChange={e =>
                                 dispatch({ type: "MODIFY_PERSONAL_INFO", payload: { phoneNumber: e.target.value } })
                             }
@@ -66,7 +80,7 @@ export default function Apply() {
                         <Input
                             label="Password"
                             placeholder="********"
-                            value={userInput.personalInfo?.password}
+                            value={userInput.personalInfo?.password || ""}
                             type="password"
                             onChange={e =>
                                 dispatch({ type: "MODIFY_PERSONAL_INFO", payload: { password: e.target.value } })
@@ -75,7 +89,7 @@ export default function Apply() {
                         <Input
                             label="Confirm Password"
                             placeholder="********"
-                            value={userInput.personalInfo?.confirmPassword}
+                            value={userInput.personalInfo?.confirmPassword || ""}
                             type="password"
                             onChange={e =>
                                 dispatch({ type: "MODIFY_PERSONAL_INFO", payload: { confirmPassword: e.target.value } })
@@ -85,6 +99,7 @@ export default function Apply() {
 
                     <br className="mt-5" />
                     <SubmitButton>Register</SubmitButton>
+                    <h3 className="text-red-600 text-center capitalize">{error}</h3>
                 </form>
             </div>
         </main>
