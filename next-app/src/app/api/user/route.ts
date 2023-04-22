@@ -4,9 +4,15 @@ import { NextResponse } from "next/server"
 import { QueryResult } from "pg"
 
 export async function PUT(request: Request) {
-    const userInfo: PersonalInfo = await request.json()
+    let userInfo: Partial<PersonalInfo>
+    let data: QueryResult<PersonalInfo>
 
-    let user: QueryResult<PersonalInfo>
+    // if body is not included in the request, or is malformed
+    try {
+        userInfo = await request.json()
+    } catch {
+        return new Response(null, { status: 400 })
+    }
 
     // double check that the password exist and that it matches the confirm password
     if (!userInfo.password) {
@@ -26,7 +32,7 @@ export async function PUT(request: Request) {
 
     try {
         // insert data into the database
-        user = (await connection?.query(
+        data = (await connection?.query(
             `INSERT INTO profile_info ${columns} VALUES (${parameters}) RETURNING id`,
             values
         )) as QueryResult<PersonalInfo>
@@ -36,5 +42,5 @@ export async function PUT(request: Request) {
     }
 
     // return what was received from the database
-    return NextResponse.json(user?.rows[0])
+    return NextResponse.json(data?.rows[0])
 }
