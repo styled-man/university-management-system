@@ -45,7 +45,10 @@ export default function Login() {
                 <div className="bg-white mt-[10vh] p-10 shadow rounded-md">
                     <h1 className="text-center font-bold text-2xl mb-5">Login</h1>
 
-                    <form className="flex items-center justify-center flex-col gap-8 w-[30vw]" onSubmit={handleSubmit}>
+                    <form
+                        className="flex items-center justify-center flex-col gap-8 w-[70vw] max-w-sm"
+                        onSubmit={handleSubmit}
+                    >
                         <Input label="Email" placeholder="someone@email.com" onChange={e => setEmail(e.target.value)} />
                         <Input
                             label="Password"
@@ -62,7 +65,9 @@ export default function Login() {
                     <hr className="my-6" />
 
                     <div className="text-center w-full">
-                        <Link href="/apply">Start your application today?</Link>
+                        <Link href="/apply" onClick={() => setLoading(true)}>
+                            Start your application today?
+                        </Link>
                     </div>
                 </div>
             </main>
