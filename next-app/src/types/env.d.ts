@@ -6,6 +6,7 @@ declare global {
             DATABASE_NAME: string
             DATABASE_PASSWORD: string
             DATABASE_PORT: `${number}`
+            JWT_SECRET: string
         }
     }
 }

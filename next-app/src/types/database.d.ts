@@ -17,3 +17,7 @@ interface Address {
     state: string
     zipCode: string
 }
+
+interface UserWithId extends PersonalInfo {
+    id: number
+}

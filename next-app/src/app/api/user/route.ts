@@ -1,11 +1,11 @@
 import connection, { databaseError, queryBuilder, toSnakeCase } from "@/utils/database"
+import { createToken } from "@/utils/jwt"
 import { hash } from "argon2"
-import { NextResponse } from "next/server"
 import { QueryResult } from "pg"
 
 export async function PUT(request: Request) {
-    let userInfo: Partial<PersonalInfo>
-    let data: QueryResult<PersonalInfo>
+    let userInfo: Partial<UserWithId>
+    let data: QueryResult<UserWithId>
 
     // if body is not included in the request, or is malformed
     try {
@@ -33,14 +33,18 @@ export async function PUT(request: Request) {
     try {
         // insert data into the database
         data = (await connection?.query(
-            `INSERT INTO profile_info ${columns} VALUES (${parameters}) RETURNING id`,
+            `INSERT INTO profile_info ${columns} VALUES (${parameters}) RETURNING id, email`,
             values
-        )) as QueryResult<PersonalInfo>
+        )) as QueryResult<UserWithId>
     } catch (e) {
         // if there is an error, show the appropriate message
         return databaseError(e)
     }
 
     // return what was received from the database
-    return NextResponse.json(data?.rows[0])
+    return new Response(JSON.stringify({ ...userInfo }), {
+        headers: {
+            "Set-Cookie": `jwt_token=${createToken(userInfo)}; HttpOnly; Secure; Path=/`,
+        },
+    })
 }
