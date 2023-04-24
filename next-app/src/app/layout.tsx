@@ -1,6 +1,6 @@
-import "./globals.tw.css"
-import { Poppins } from "next/font/google"
 import Navbar from "@/components/Navbar"
+import { Poppins } from "next/font/google"
+import "./globals.tw.css"
 
 export const metadata = {
     title: "University management system",
