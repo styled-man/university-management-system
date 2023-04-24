@@ -33,7 +33,9 @@ export default function Apply() {
             return
         }
 
-        router.push("/profile")
+        window.setTimeout(() => {
+            router.push("/profile")
+        }, 1000)
     }
 
     return (

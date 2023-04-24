@@ -33,7 +33,7 @@ export async function PUT(request: Request) {
     try {
         // insert data into the database
         data = (await connection?.query(
-            `INSERT INTO profile_info ${columns} VALUES (${parameters}) RETURNING id, email`,
+            `INSERT INTO profile_info ${columns} VALUES (${parameters}) RETURNING id, email, first_name, last_name`,
             values
         )) as QueryResult<UserWithId>
     } catch (e) {
@@ -42,9 +42,9 @@ export async function PUT(request: Request) {
     }
 
     // return what was received from the database
-    return new Response(JSON.stringify({ ...userInfo }), {
+    return new Response(JSON.stringify({ ...data }), {
         headers: {
-            "Set-Cookie": `jwt_token=${createToken(userInfo)}; HttpOnly; Secure; Path=/`,
+            "Set-Cookie": `jwt_token=${createToken(data)}; HttpOnly; Secure; Path=/`,
         },
     })
 }

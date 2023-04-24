@@ -3,6 +3,7 @@
 import Input from "@/components/Input"
 import Loading from "@/components/Loading"
 import SubmitButton from "@/components/SubmitButton"
+import { signIn } from "@/utils/auth"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { FormEvent, useState } from "react"
@@ -20,13 +21,7 @@ export default function Login() {
         setError(null)
         setLoading(true)
 
-        const response = await fetch("/api/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, password }),
-        })
+        const response = await signIn(email, password)
 
         if (!response.ok) {
             setError(response.statusText)
@@ -34,7 +29,7 @@ export default function Login() {
             return
         }
 
-        router.push("/dashboard")
+        router.push("/profile")
     }
 
     return (

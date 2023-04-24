@@ -23,9 +23,10 @@ export async function POST(request: Request) {
 
     // look for the user in the database via the email provided
     try {
-        data = (await connection?.query(`SELECT id, password FROM profile_info WHERE email = $1`, [
-            userInfo.email,
-        ])) as QueryResult<UserWithId>
+        data = (await connection?.query(
+            `SELECT id, email, first_name, last_name, password FROM profile_info WHERE email = $1`,
+            [userInfo.email]
+        )) as QueryResult<UserWithId>
     } catch (e) {
         const error = e as DatabaseError
         return new Response(null, { status: 500, statusText: error.message })
@@ -41,8 +42,10 @@ export async function POST(request: Request) {
         return new Response(null, { status: 403, statusText: "Invalid email or password!" })
     }
 
+    userInfo = data.rows[0]
     delete userInfo.password
-    userInfo.id = data.rows[0].id
+
+    console.log("api:", userInfo)
 
     return new Response(JSON.stringify({ ...userInfo }), {
         headers: {
