@@ -4,7 +4,7 @@ import { getSession, singOut } from "@/utils/auth"
 import { Session } from "@/utils/jwt"
 import Link from "next/link"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import Loading from "./Loading"
 
 type NavLinks = {
@@ -15,6 +15,7 @@ type NavLinks = {
 }
 
 export default function Navbar() {
+    const pathName = usePathname()
     const [session, setSession] = useState<Session | null>(null)
     const [showMenu, setMenu] = useState(false)
     const [isLoading, setLoading] = useState(false)
@@ -38,7 +39,6 @@ export default function Navbar() {
 
     useEffect(() => {
         function handleDropdownMenu(event: MouseEvent) {
-            console.log(dropdownMenu.current?.contains(event.target as HTMLElement))
             if (showMenu && !dropdownMenu.current?.contains(event.target as HTMLElement)) {
                 setMenu(false)
             }
@@ -52,16 +52,13 @@ export default function Navbar() {
     }, [showMenu])
 
     useEffect(() => {
+        console.log(pathName)
         ;(async function () {
             const response = await getSession()
 
-            if (!response.ok) {
-                return
-            }
-
-            setSession(await response.json())
+            setSession(response.ok ? await response.json() : null)
         })()
-    }, [])
+    }, [pathName])
 
     async function handleSignOut() {
         setLoading(true)
@@ -85,8 +82,8 @@ export default function Navbar() {
                             className="flex items-center justify-center rounded-full p-3 bg-black bg-opacity-20 w-10 h-10 mr-8 z-20"
                             onClick={() => setMenu(!showMenu)}
                         >
-                            <span className="text-xl">{session.data.firstName.charAt(0)}</span>
-                            <span className="text-xl">{session.data.lastName.charAt(0)}</span>
+                            <span className="text-xl">{session?.data?.firstName?.charAt(0)}</span>
+                            <span className="text-xl">{session?.data?.lastName?.charAt(0)}</span>
                         </button>
 
                         {showMenu ? (
