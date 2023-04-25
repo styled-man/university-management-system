@@ -45,8 +45,6 @@ export async function POST(request: Request) {
     userInfo = data.rows[0]
     delete userInfo.password
 
-    console.log("api:", userInfo)
-
     return new Response(JSON.stringify({ ...userInfo }), {
         headers: {
             "Set-Cookie": `jwt_token=${createToken(userInfo)}; HttpOnly; Secure; Path=/`,
