@@ -1,3 +1,12 @@
+CREATE TABLE "student"(
+    "id" SERIAL NOT NULL,
+    "profile_info_id" INTEGER NOT NULL,
+    "major" VARCHAR(255) NULL,
+    "gpa" DECIMAL(8, 2) NOT NULL DEFAULT '2',
+    "credits" INTEGER NOT NULL
+);
+ALTER TABLE "student"
+ADD PRIMARY KEY("id");
 CREATE TABLE "profile_info"(
     "id" SERIAL NOT NULL,
     "first_name" VARCHAR(255) NOT NULL,
@@ -26,3 +35,5 @@ ALTER TABLE "address"
 ADD PRIMARY KEY("id");
 ALTER TABLE "address"
 ADD CONSTRAINT "address_profile_info_id_foreign" FOREIGN KEY("profile_info_id") REFERENCES "profile_info"("id");
+ALTER TABLE "student"
+ADD CONSTRAINT "student_profile_info_id_foreign" FOREIGN KEY("profile_info_id") REFERENCES "profile_info"("id");
