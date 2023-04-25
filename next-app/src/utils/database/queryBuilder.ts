@@ -1,7 +1,7 @@
 export class queryBuilder {
-    static columnsAndValues<T extends object>(data: T) {
+    static insert<T extends object>(data: T) {
         let columns = "("
-        let values: string[] = []
+        const values: string[] = []
 
         Object.entries(data).forEach(([key, value], index) => {
             if (index !== 0) {
@@ -19,5 +19,23 @@ export class queryBuilder {
             values,
             parameters: [...Array(values.length)].map((_, i) => `$${i + 1}`).join(", "),
         }
+    }
+
+    static update<T extends object>(data: T) {
+        let parameters: string = ""
+        const values: Array<string> = []
+
+        Object.entries(data).forEach(([key, value], index) => {
+            if (value) {
+                if (index !== 0) {
+                    parameters += ", "
+                }
+
+                parameters += `"${key}" = $${index + 1}`
+                values.push(value)
+            }
+        })
+
+        return { parameters, values }
     }
 }

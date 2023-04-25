@@ -1,6 +1,6 @@
 import connection, { databaseError, queryBuilder, toSnakeCase } from "@/utils/database"
 import { cookies } from "next/headers"
-import { createToken, decodeToken } from "@/utils/jwt"
+import { Session, createToken, decodeToken } from "@/utils/jwt"
 import { hash } from "argon2"
 import { QueryResult } from "pg"
 
@@ -32,7 +32,7 @@ export async function PUT(request: Request) {
     delete userInfo.accountType
 
     // extract the data from what the user sent
-    const { columns, parameters, values } = queryBuilder.columnsAndValues(toSnakeCase(userInfo))
+    const { columns, parameters, values } = queryBuilder.insert(toSnakeCase(userInfo))
 
     try {
         // insert data into the database
@@ -56,15 +56,18 @@ export async function PUT(request: Request) {
 
     // return what was received from the database
     return new Response(JSON.stringify({ ...data.rows[0], accountType: userType }), {
+        status: 201,
         headers: {
             "Set-Cookie": `jwt_token=${createToken(data.rows[0])}; HttpOnly; Secure; Path=/`,
         },
     })
 }
 
-export async function UPDATE(request: Request) {
+export async function PATCH(request: Request) {
     let userInfo: { personalInfo: Partial<PersonalInfoWithId>; studentInfo: Partial<Student> }
     const session = decodeToken(cookies().get("jwt_token")?.value)
+    let modified = false
+    let responseMeta: ResponseInit = {}
 
     if (!session) {
         return new Response(null, { status: 401 })
@@ -77,24 +80,54 @@ export async function UPDATE(request: Request) {
         return new Response(null, { status: 400 })
     }
 
-    const {
-        columns: personaInfoCols,
-        parameters: personalInfoParams,
-        values: personalInfoVal,
-    } = queryBuilder.columnsAndValues(toSnakeCase(userInfo.personalInfo))
+    // if new personal info is included
+    if (userInfo.personalInfo && Object.keys(userInfo.personalInfo).length) {
+        const { parameters: personalInfoParams, values: personalInfoValues } = queryBuilder.update(
+            toSnakeCase(userInfo.personalInfo)
+        )
 
-    const {
-        columns: studentInfoCols,
-        parameters: studentInfoParams,
-        values: studentInfoVal,
-    } = queryBuilder.columnsAndValues(toSnakeCase(userInfo.studentInfo))
+        try {
+            ;(await connection?.query(
+                `
+                UPDATE profile_info
+                    SET ${personalInfoParams}
+                    WHERE id = ${session.data.id}
+                `,
+                personalInfoValues
+            )) as QueryResult<Session>
+        } catch (e) {
+            return databaseError(e)
+        }
 
-    try {
-        await connection?.query("UPDATE profile_info SET WHERE profile_info_id = $1", [session.data.id])
-        await connection?.query("UPDATE FROM profile_info WHERE id = $1", [session.data.id])
-    } catch (e) {
-        return databaseError(e)
+        const data = (await connection?.query(
+            `SELECT id, email, first_name, last_name FROM profile_info WHERE id = ${session.data.id}`
+        )) as QueryResult<Session>
+
+        responseMeta = {
+            ...responseMeta,
+            headers: { "Set-Cookie": `jwt_token=${createToken(data.rows[0])}; HttpOnly; Secure; Path=/` },
+        }
+
+        modified = true
     }
+
+    if (userInfo.studentInfo && Object.keys(userInfo.studentInfo).length) {
+        const { parameters: studentInfoParams, values: studentInfoValues } = queryBuilder.update(
+            toSnakeCase(userInfo.studentInfo)
+        )
+
+        try {
+            await connection?.query(
+                `UPDATE student SET ${studentInfoParams} WHERE profile_info_id = ${session.data.id}`,
+                [studentInfoValues]
+            )
+        } catch (e) {
+            return databaseError(e)
+        }
+        modified = true
+    }
+
+    return new Response(null, { ...responseMeta, status: modified ? 200 : 304 })
 }
 
 export async function DELETE(request: Request) {
