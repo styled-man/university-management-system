@@ -4,18 +4,28 @@ import Input from "@/components/Input"
 import Section from "@/components/Section"
 import SubmitButton from "@/components/SubmitButton"
 import { INITIAL_STATE, UserData, userDataReducer } from "@/utils/reducers/userData"
-import { FormEvent, useEffect, useReducer } from "react"
+import { useRouter } from "next/navigation"
+import { FormEvent, useEffect, useReducer, MouseEvent } from "react"
 
 export default function Setup() {
+    const router = useRouter()
     const [userInput, dispatch] = useReducer(userDataReducer, INITIAL_STATE)
 
     function handleSubmit(event: FormEvent<HTMLFormElement>, formName?: keyof UserData) {
         event.preventDefault()
     }
 
-    useEffect(() => {
-        console.log("current state:", userInput)
-    }, [userInput])
+    async function deleteAccount(event: MouseEvent<HTMLButtonElement>) {
+        event.preventDefault()
+
+        const response = await fetch("/api/user", {
+            method: "DELETE",
+        })
+
+        if (response.ok) {
+            router.push("/")
+        }
+    }
 
     return (
         <main className="flex items-center justify-center flex-col gap-8 mx-10 my-[5vh]">
@@ -141,6 +151,15 @@ export default function Setup() {
                     />
                 </form>
             </Section>
+
+            <div>
+                <button
+                    onClick={deleteAccount}
+                    className="border border-red-600 py-3 px-5 rounded-md hover:bg-red-500 hover:text-white"
+                >
+                    Delete Account
+                </button>
+            </div>
         </main>
     )
 }
