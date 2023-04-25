@@ -4,8 +4,8 @@ import { verify } from "argon2"
 import { DatabaseError, QueryResult } from "pg"
 
 export async function POST(request: Request) {
-    let userInfo: Partial<UserWithId>
-    let data: QueryResult<UserWithId>
+    let userInfo: Partial<PersonalInfoWithId>
+    let data: QueryResult<PersonalInfoWithId>
 
     // if body is not included in the request, or is malformed
     try {
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
         data = (await connection?.query(
             `SELECT id, email, first_name, last_name, password FROM profile_info WHERE email = $1`,
             [userInfo.email]
-        )) as QueryResult<UserWithId>
+        )) as QueryResult<PersonalInfoWithId>
     } catch (e) {
         const error = e as DatabaseError
         return new Response(null, { status: 500, statusText: error.message })
