@@ -52,7 +52,6 @@ export default function Navbar() {
     }, [showMenu])
 
     useEffect(() => {
-        console.log(pathName)
         ;(async function () {
             const response = await getSession()
 
