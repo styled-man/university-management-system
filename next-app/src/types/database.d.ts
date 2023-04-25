@@ -1,4 +1,5 @@
 interface PersonalInfo {
+    accountType: "student" | "teacher"
     firstName: string
     lastName: string
     email: string
@@ -18,6 +19,12 @@ interface Address {
     zipCode: string
 }
 
-interface UserWithId extends PersonalInfo {
+interface Student {
+    major: string
+    gpa: number
+    credits: number
+}
+
+interface PersonalInfoWithId extends PersonalInfo {
     id: number
 }
