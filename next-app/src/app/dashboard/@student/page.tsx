@@ -8,15 +8,15 @@ export default async function studentDashboard() {
 
     return (
         <main className="">
-            <div className="mb-[13vh]">&nbsp;</div>
+            <div className="mb-[13vh] border-t-2 border-black w-full">&nbsp;</div>
 
             <div className="flex items-center justify-center gap-28">
                 <Link
                     href="/profile"
-                    className="flex flex-col items-center justify-center rounded-md bg-gray-200 w-72 h-80 border-2 border-gray-300 py-5 px-16 cursor-pointer"
+                    className="flex flex-col items-center justify-center px-16 py-5 bg-gray-200 border-2 border-gray-300 rounded-md cursor-pointer w-72 h-80"
                 >
-                    <h1 className="font-semibold text-xl">Profile</h1>
-                    <h2 className="flex items-center justify-center rounded-full bg-gray-300 w-36 h-36 text-gray-400 text-8xl font-bold my-6">
+                    <h1 className="text-xl font-semibold">Profile</h1>
+                    <h2 className="flex items-center justify-center my-6 font-bold text-gray-400 bg-gray-300 rounded-full w-36 h-36 text-8xl">
                         <span className="">{session!.data.firstName.charAt(0)}</span>
                         <span className="">{session!.data.lastName.charAt(0)}</span>
                     </h2>
@@ -30,11 +30,11 @@ export default async function studentDashboard() {
 
                 <Link
                     href="/classes"
-                    className="text-center rounded-md bg-gray-200 w-72 h-80 border-2 border-gray-300 py-5 cursor-pointer"
+                    className="py-5 text-center bg-gray-200 border-2 border-gray-300 rounded-md cursor-pointer w-72 h-80"
                 >
-                    <h1 className="font-semibold text-xl">Manage Classes</h1>
+                    <h1 className="text-xl font-semibold">Manage Classes</h1>
 
-                    <IoSchoolOutline className="text-gray-400 font-bold text-9xl mt-10 mx-auto" />
+                    <IoSchoolOutline className="mx-auto mt-10 font-bold text-gray-400 text-9xl" />
                 </Link>
             </div>
         </main>

@@ -44,9 +44,9 @@ export default function Apply() {
         <>
             {<Loading show={isLoading} />}
 
-            <main className="flex items-center flex-col justify-center">
+            <main className="flex flex-col items-center justify-center">
                 <div className="bg-white mt-[10vh] p-10 shadow rounded-md">
-                    <h1 className="text-center font-bold text-2xl mb-5">Register</h1>
+                    <h1 className="mb-5 text-2xl font-bold text-center">Register</h1>
 
                     <form className="w-[80vh] mt-10" onSubmit={handleSubmit}>
                         <div className="grid grid-cols-2 gap-4">
@@ -126,7 +126,7 @@ export default function Apply() {
                         </div>
 
                         <SubmitButton>Register</SubmitButton>
-                        <h3 className="text-red-600 text-center capitalize">{error}</h3>
+                        <h3 className="text-center text-red-600 capitalize">{error}</h3>
                     </form>
                 </div>
             </main>

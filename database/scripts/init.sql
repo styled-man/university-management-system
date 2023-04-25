@@ -98,3 +98,5 @@ ALTER TABLE "enrollment"
 ADD CONSTRAINT "enrollment_section_id_foreign" FOREIGN KEY("section_id") REFERENCES "section"("id");
 ALTER TABLE "enrollment"
 ADD CONSTRAINT "enrollment_student_id_foreign" FOREIGN KEY("student_id") REFERENCES "student"("id");
+--
+ALTER SEQUENCE profile_info_id_seq RESTART WITH 2348820;
