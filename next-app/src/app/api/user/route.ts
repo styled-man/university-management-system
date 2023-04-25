@@ -46,10 +46,7 @@ export async function PUT(request: Request) {
     }
 
     try {
-        await connection?.query("INSERT INTO student (profile_info_id, major, gpa, credits) VALUES ($1, $2, 0.0, 0)", [
-            data.rows[0].id,
-            `N/A`,
-        ])
+        await connection?.query("INSERT INTO student (id) VALUES ($1)", [data.rows[0].id])
     } catch (e) {
         return databaseError(e)
     }
