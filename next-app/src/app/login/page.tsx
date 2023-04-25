@@ -29,7 +29,7 @@ export default function Login() {
             return
         }
 
-        router.push("/profile")
+        router.push("/dashboard")
     }
 
     return (
