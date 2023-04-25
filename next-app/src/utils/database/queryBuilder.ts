@@ -1,3 +1,5 @@
+import { snakeCase as lodashSnakeCase } from "lodash"
+
 export class queryBuilder {
     static insert<T extends object>(data: T) {
         let columns = "("
@@ -37,5 +39,9 @@ export class queryBuilder {
         })
 
         return { parameters, values }
+    }
+
+    static get(data: Array<string>) {
+        return data.map(f => `"${lodashSnakeCase(f)}"`).join(", ")
     }
 }

@@ -2,7 +2,7 @@ import { ChangeEvent } from "react"
 
 interface Input {
     label: string
-    placeholder: string
+    placeholder?: string
     onChange: (event: ChangeEvent<HTMLInputElement>) => void
     value?: string
     type?: "text" | "password"
