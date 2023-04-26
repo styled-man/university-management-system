@@ -24,17 +24,19 @@ export class queryBuilder {
     }
 
     static update<T extends object>(data: T) {
-        let parameters: string = ""
+        let parameters: string = "",
+            i: number = 1
         const values: Array<string> = []
 
-        Object.entries(data).forEach(([key, value], index) => {
+        Object.entries(data).forEach(([key, value]) => {
             if (value) {
-                if (index !== 0) {
+                if (i !== 1) {
                     parameters += ", "
                 }
 
-                parameters += `"${key}" = $${index + 1}`
+                parameters += `"${key}" = $${i}`
                 values.push(value)
+                i++
             }
         })
 

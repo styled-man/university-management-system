@@ -114,10 +114,9 @@ export async function PATCH(request: Request) {
         )
 
         try {
-            await connection?.query(
-                `UPDATE student SET ${studentInfoParams} WHERE profile_info_id = ${session.data.id}`,
-                [studentInfoValues]
-            )
+            await connection?.query(`UPDATE student SET ${studentInfoParams} WHERE id = ${session.data.id}`, [
+                studentInfoValues,
+            ])
         } catch (e) {
             return databaseError(e)
         }
@@ -135,7 +134,7 @@ export async function DELETE(request: Request) {
     }
 
     try {
-        await connection?.query("DELETE FROM student WHERE profile_info_id = $1", [userInfo?.data.id])
+        await connection?.query("DELETE FROM student WHERE id = $1", [userInfo?.data.id])
         await connection?.query("DELETE FROM profile_info WHERE id = $1", [userInfo?.data.id])
     } catch (e) {
         return databaseError(e)

@@ -8,7 +8,7 @@ export default async function studentDashboard() {
 
     return (
         <main className="">
-            <div className="mb-[13vh] border-t-2 border-black w-full">&nbsp;</div>
+            <div className="mb-[13vh] border-t-2 border-gray-400 w-full">&nbsp;</div>
 
             <div className="flex items-center justify-center gap-28">
                 <Link
