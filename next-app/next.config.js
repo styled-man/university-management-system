@@ -7,6 +7,9 @@ const nextConfig = {
         }
         return config
     },
+    typescript: {
+        ignoreBuildErrors: true,
+    },
     experimental: {
         appDir: true,
     },

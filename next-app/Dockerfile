@@ -13,4 +13,5 @@ FROM base as production
 ENV NODE_ENV=production
 RUN npm clean-install
 COPY . .
+RUN npm run build
 CMD npm start -- -p ${NEXT_APP_PORT}
